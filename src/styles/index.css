@@ -1,0 +1,36 @@
+@import "tailwindcss";
+:root {
+  font-family: yekan;
+  line-height: 1.5;
+  font-weight: 400;
+  color: black;
+  color-scheme: light dark;
+  background-color: #ffffff;
+
+}
+
+@font-face {
+  font-family: yekan;
+  src: url("../assets/fonts/BYekan.ttf");
+}
+@theme{
+  --color-nalenji:#E48900;
+}
+.linear-gradient {
+  background: linear-gradient(
+    312.42deg,
+    rgba(1, 206, 201, 0.225) 25.72%,
+    rgba(228, 137, 0, 0.225) 105.44%
+  );
+}
+#authInput {
+  background: #f7f7f7;
+  border-radius: 10px;
+  border: none;
+  padding: 10px;
+  box-shadow: inset 2px 2px 0px rgba(0, 0, 0, 0.25);
+  direction: rtl;
+}
+#authInput:focus {
+  outline: none;
+}
