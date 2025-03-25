@@ -1,59 +1,91 @@
-import React, { useEffect } from 'react';  
-import { useDispatch, useSelector } from 'react-redux';
-import { useGetCoursesFilter } from '../../../hooks/Courses/useGetCoursesFilter';  
-import Accordion from '../../common/Accordion/Accordion';
-import { setLevelId, setTypeId, setListTech } from '../../../redux/slice/FilterCourses';
+import React, { useEffect } from "react";
+import { useGetCoursesFilter } from "../../../hooks/Courses/useGetCoursesFilter";
+import Accordion from "../../common/Accordion/Accordion";
+import { FaRegTrashCan } from "react-icons/fa6";
 
-function CoursesFilterBox() {  
-  const dispatch = useDispatch();
-  const filterState = useSelector((state) => state.Filter_Courses);
+function CoursesFilterBox({ setSearchParams, searchParams }) {
+  const {
+    GetTechnologies,
+    GetCourseTypes,
+    GetAllCourseLevels,
+    data,
+    loading,
+    error,
+  } = useGetCoursesFilter();
 
-  const {  
-    GetTechnologies,  
-    GetCourseTypes,  
-    GetAllCourseLevels,  
-    data,  
-    loading,  
-    error,  
-  } = useGetCoursesFilter();  
-
-  useEffect(() => {  
+  useEffect(() => {
     GetTechnologies();
     GetCourseTypes();
     GetAllCourseLevels();
   }, []);
 
-  if (loading.technologies || loading.types || loading.levels) {  
-    return <div>Loading...</div>;  
-  }  
-
-  if (error.technologies || error.types || error.levels) {  
-    return <div>Error loading data! Please try again.</div>;  
+  if (loading.technologies || loading.types || loading.levels) {
+    return <div>Loading...</div>;
   }
 
+  if (error.technologies || error.types || error.levels) {
+    return <div>Error loading data! Please try again.</div>;
+  }
+  const handleCheckboxChange = (event, category) => {  
+    const inputId = event.target.id;  
+    const isChecked = event.target.checked;  
 
-  return (  
-    <div>  
-      <Accordion 
-        title="Levels" 
-        content={data.levels} 
-        selected={filterState.courseLevelId}
-        onChange={(id) => dispatch(setLevelId(id))}
+    const currentSelection = searchParams.get(category) ? searchParams.get(category).split(',') : [];  
+
+    if (isChecked) {  
+        if (!currentSelection.includes(inputId)) {  
+            currentSelection.push(inputId);  
+        }  
+    } else {  
+        const index = currentSelection.indexOf(inputId);  
+        if (index > -1) {  
+            currentSelection.splice(index, 1);  
+        }  
+    }  
+
+    if (currentSelection.length > 0) {  
+        currentSelection.forEach(id => searchParams.append(category, id));  
+    } else {  
+        searchParams.delete(category);  
+    }  
+
+    setSearchParams(searchParams);  
+};    
+
+  return (
+    <div className="flex flex-col w-60 shadow-2xl rounded-2xl p-4 bg-white ">
+      <span className="flex justify-between items-center ">
+        <FaRegTrashCan
+        className="text-red-500 cursor-pointer"
+          onClick={() => {
+            setSearchParams("");
+          }}
+        />
+        <p>فیلتر ها</p>
+      </span>
+      <Accordion
+        title="Levels"
+        content={data.levels}
+        category="courseLevelId" 
+        searchParams={searchParams} 
+        onChange={handleCheckboxChange}
       />
-      <Accordion 
-        title="Technologies" 
-        content={data.technologies} 
-        selected={filterState.ListTech}
-        onChange={(id) => dispatch(setListTech(id))}
+      <Accordion
+        title="Technologies"
+        content={data.technologies}
+        category="ListTech" 
+        searchParams={searchParams} 
+        onChange={handleCheckboxChange}
       />
-      <Accordion 
-        title="Types" 
-        content={data.types} 
-        selected={filterState.CourseTypeId}
-        onChange={(id) => dispatch(setTypeId(id))}
+      <Accordion
+        title="Types"
+        content={data.types}
+        category="CourseTypeId" 
+        searchParams={searchParams} 
+        onChange={handleCheckboxChange}
       />
-    </div>  
-  );  
-}  
+    </div>
+  );
+}
 
 export default CoursesFilterBox;

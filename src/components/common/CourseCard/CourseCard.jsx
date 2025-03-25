@@ -1,23 +1,51 @@
-import React from 'react';  
+import React from "react";
+import fallbackimg from "/src/assets/photos/Teach-Your-Kids-Code-Front-Page-Image-1.jpg";
+import { PiStudentFill } from "react-icons/pi";
+import { FaUser } from "react-icons/fa";
+import { FaLayerGroup } from "react-icons/fa";
+import { MdAddShoppingCart } from "react-icons/md";
 
-function CourseCard({ img, title, cost, teacherName, currentRegistrants, levelName }) {  
-  return (  
-    <div className='w-50 h-80 flex flex-col border rounded shadow-lg p-4'>  
-      <img   
-        src={img}   
-        alt={title}   
-        className='object-cover h-40 w-full rounded-md'  
-        onError={(e) => {   
-          e.target.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeG8eNGIrLcY_4JsLdQS_GmbtCrsh-PvXWaQ&s';   
-        }}   
-      />  
-      <h2 className='text-lg font-bold mt-2'>{title}</h2>  
-      <p className='text-sm text-gray-700'>Cost: {cost}</p>  
-      <p className='text-sm text-gray-700'>Instructor: {teacherName}</p>  
-      <p className='text-sm text-gray-700'>Registrants: {currentRegistrants}</p>  
-      <p className='text-sm text-gray-700'>Level: {levelName}</p>  
-    </div>  
-  );  
-}  
+function CourseCard({
+  img,
+  title,
+  cost,
+  teacherName,
+  currentRegistrants,
+  levelName,
+}) {
+  return (
+    <div className="  flex flex-col border rounded shadow-lg p-4 bg-white w-full cursor-pointer ">
+      <img
+        src={img || fallbackimg}
+        alt={title}
+        className="object-cover h-40 w-full rounded-md -translate-y-10"
+        onError={(e)=>{e.target.src = fallbackimg}}
+      />
+      <h2 className="text-2xl font-bold flex justify-end my-1">{title}</h2>
+      <span className="flex justify-between">
+        <p className="text-2xl text-gray-700 flex items-center gap-2">
+          <PiStudentFill />
+          {currentRegistrants}
+        </p>
+        <p className="text-2xl text-gray-700 flex items-center gap-2">
+          {teacherName}
+          <FaUser />
+        </p>
+      </span>
+      <p className="text-2xl text-gray-700 flex items-center gap-2">
+        <FaLayerGroup />
+        {levelName}
+      </p>
+      <hr className="my-2" />
+      <span className="flex justify-between text-sky-500 text-2xl my-4">
+        <h1 className="flex items-center gap-2">
+          <p>تومان</p>
+          {cost}
+        </h1>
+        <MdAddShoppingCart />
+      </span>
+    </div>
+  );
+}
 
-export default CourseCard;  
+export default CourseCard;

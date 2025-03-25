@@ -5,7 +5,7 @@ import { MdSort } from 'react-icons/md'
 
 function CoursesSort() {
   return (
-    <div className="flex justify-between">
+    <div className="flex justify-between -translate-y-10">
         <div className="flex items-center  p-1 shadow-xl mx-2 rounded-sm bg-white ">
           <label>
             <MdSort className="text-3xl" />
