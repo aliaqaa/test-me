@@ -3,7 +3,10 @@ import { useGetCourses } from "../../../hooks/Courses/useGetCourses";
 import CoursesSort from "../CoursesSort/CoursesSort";
 import CoursesFilterBox from "../CoursesFilterBox/CoursesFilterBox";
 import CourseCard from "../../common/CourseCard/CourseCard";
+import Skeleton from "react-loading-skeleton";
+import 'react-loading-skeleton/dist/skeleton.css';
 import { useSearchParams } from "react-router";
+import SkeletonCart from "../../common/skeletonCart/SkeletonCart";
 
 function CoursesPagination() {
   const { getCoursesWithPagination, data, loading, error } = useGetCourses();
@@ -12,7 +15,7 @@ function CoursesPagination() {
 
   const currentPage = parseInt(searchParams.get("PageNumber")) || 1;
   const pageSize = parseInt(searchParams.get("RowsOfPage")) || 10;
-  const totalPages = data?.totalCount / pageSize;
+  const totalPages = data?.totalCount ? Math.ceil(data.totalCount / pageSize) : 1;
 
   useEffect(() => {
     getCoursesWithPagination(searchParams);
@@ -24,8 +27,7 @@ function CoursesPagination() {
       PageNumber: newPage,
       RowsOfPage: 10,
     });
-    window.scrollTo(0,550);  
-
+    window.scrollTo(0, 550);
   };
 
   const getPageNumbers = () => {
@@ -61,23 +63,29 @@ function CoursesPagination() {
   };
 
   return (
-    <div className="container m-auto justify-center flex  items-start gap-10  mb-10">
+    <div className="container m-auto justify-center flex items-start gap-10 mb-10">
       <div className="flex flex-col">
         <CoursesSort setGrid={setGrid} />
-        <div
-          className={`${grid === "grid" ? "grid grid-cols-3 gap-10" : "list"}`}
-        >
-          {data?.courseFilterDtos?.map((course) => (
-            <CourseCard
-              title={course.title}
-              img={course.tumbImageAddress}
-              key={course.courseId}
-              cost={course.cost}
-              teacherName={course.teacherName}
-              currentRegistrants={course.currentRegistrants}
-              levelName={course.levelName}
-            />
-          ))}
+
+        <div className={`${grid === "grid" ? "grid grid-cols-3 gap-10" : "list"}`}>
+          {loading
+            ? 
+              Array.from({ length: pageSize }).map((_, idx) => (
+                <SkeletonCart k key={idx}/>
+              ))
+            : 
+              data?.courseFilterDtos?.map((course) => (
+                <CourseCard
+                  title={course.title}
+                  img={course.tumbImageAddress}
+                  key={course.courseId}
+                  cost={course.cost}
+                  teacherName={course.teacherName}
+                  currentRegistrants={course.currentRegistrants}
+                  levelName={course.levelName}
+                />
+              ))
+          }
         </div>
 
         <div className="flex justify-center items-center gap-4 mt-6">
@@ -115,12 +123,12 @@ function CoursesPagination() {
             &raquo;
           </button>
         </div>
-        </div>
+      </div>
 
-        <CoursesFilterBox
-          searchParams={searchParams}
-          setSearchParams={setSearchParams}
-        />
+      <CoursesFilterBox
+        searchParams={searchParams}
+        setSearchParams={setSearchParams}
+      />
     </div>
   );
 }
